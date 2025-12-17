@@ -1,0 +1,5 @@
+runpod
+soundfile
+torch
+torchaudio
+numpy
