@@ -2,16 +2,15 @@ FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
 
 WORKDIR /app
 
-ENV PYTHONPATH=/app/src
+ENV PYTHONPATH=/app
 
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     libsndfile1 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY . /app
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-
-CMD ["python", "-u", "handler.py"]
+CMD ["python", "chatterbox/handler.py"]
