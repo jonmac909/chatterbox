@@ -3,32 +3,32 @@ import tempfile
 import soundfile as sf
 import runpod
 
-from chatterbox.tts import ChatterboxTTS
-
-# Lazy-load model to avoid cold-start crash
 tts = None
 
-def handler(event):
+def get_tts():
     global tts
+    if tts is None:
+        from chatterbox.tts import ChatterboxTTS
+        tts = ChatterboxTTS.from_pretrained("resemble-ai/chatterbox")
+    return tts
 
+def handler(event):
     text = event.get("input", {}).get("text")
+
     if not text:
         return {"error": "No text provided"}
 
-    if tts is None:
-        tts = ChatterboxTTS()
+    tts = get_tts()
+    audio = tts.synthesize(text)
 
-    # Generate audio
-    wav, sample_rate = tts.tts(text)
-
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=True) as f:
-        sf.write(f.name, wav, sample_rate)
+    with tempfile.NamedTemporaryFile(suffix=".wav") as f:
+        sf.write(f.name, audio["audio"], audio["sample_rate"])
         f.seek(0)
         audio_bytes = f.read()
 
     return {
         "audio_base64": base64.b64encode(audio_bytes).decode("utf-8"),
-        "sample_rate": sample_rate
+        "sample_rate": audio["sample_rate"]
     }
 
 runpod.serverless.start({"handler": handler})
