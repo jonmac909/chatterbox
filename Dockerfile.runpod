@@ -1,0 +1,29 @@
+# RunPod Serverless Dockerfile for Chatterbox TTS with Voice Cloning
+FROM runpod/pytorch:2.4.0-py3.11-cuda12.1.0-runtime
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy project files
+COPY . /app
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install RunPod SDK
+RUN pip install --no-cache-dir runpod
+
+# Install soundfile for audio writing
+RUN pip install --no-cache-dir soundfile
+
+# Set Python path
+ENV PYTHONPATH=/app:$PYTHONPATH
+
+# Run the handler
+CMD ["python", "-u", "handler.py"]
