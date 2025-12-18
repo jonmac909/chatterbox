@@ -1,5 +1,8 @@
 runpod
 soundfile
+torch==2.4.0
+torchvision==0.19.0
+torchaudio==2.4.0
 numpy>=1.24.0,<1.26.0
 librosa==0.11.0
 s3tokenizer
