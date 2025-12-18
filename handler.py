@@ -130,6 +130,13 @@ def handler(job):
 
         logger.info("Audio generation completed")
 
+        # Convert torch tensor to numpy array for soundfile
+        # ChatterboxTurboTTS returns shape (1, samples), need to squeeze
+        if torch.is_tensor(wav):
+            wav_numpy = wav.squeeze().cpu().numpy()
+        else:
+            wav_numpy = wav
+
         # Save generated audio to temp file
         temp_output = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
         output_path = temp_output.name
@@ -137,7 +144,7 @@ def handler(job):
 
         # Write WAV file
         import soundfile as sf
-        sf.write(output_path, wav, 24000)
+        sf.write(output_path, wav_numpy, 24000)
         logger.info(f"Output audio saved to: {output_path}")
 
         # Encode output to base64
