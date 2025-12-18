@@ -19,6 +19,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Install the chatterbox package from the local src directory
 RUN pip install --no-cache-dir -e .
 
+# Pre-download the ChatterboxTurbo model from HuggingFace during build
+# This avoids authentication issues and makes startup instant
+RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='ResembleAI/chatterbox-turbo', token=True, allow_patterns=['*.safetensors', '*.json', '*.txt', '*.pt', '*.model'])" || \
+    python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='ResembleAI/chatterbox-turbo', token=False, allow_patterns=['*.safetensors', '*.json', '*.txt', '*.pt', '*.model'])"
+
 # Set Python path
 ENV PYTHONPATH=/app:$PYTHONPATH
 
