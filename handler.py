@@ -14,7 +14,7 @@ from pathlib import Path
 import logging
 
 # Import Chatterbox
-from chatterbox import ChatterboxTurbo
+from chatterbox.tts_turbo import ChatterboxTurboTTS
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,7 +25,7 @@ logger.info("Loading Chatterbox model...")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 logger.info(f"Using device: {device}")
 
-model = ChatterboxTurbo(device=device)
+model = ChatterboxTurboTTS.from_pretrained(device=device)
 logger.info("Chatterbox model loaded successfully")
 
 
