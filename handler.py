@@ -209,12 +209,18 @@ def handler(job):
         logger.info("Generating audio with Chatterbox...")
 
         try:
+            # Generation parameters to reduce repetition
+            gen_params = {
+                "repetition_penalty": 1.5,  # Increased from 1.2 default to reduce phrase repetition
+                "temperature": 0.7,         # Reduced from 0.8 default for more consistent output
+            }
+
             if audio_prompt_path:
                 # Voice cloning mode
-                wav = model.generate(text, audio_prompt_path=audio_prompt_path)
+                wav = model.generate(text, audio_prompt_path=audio_prompt_path, **gen_params)
             else:
                 # Default voice mode
-                wav = model.generate(text)
+                wav = model.generate(text, **gen_params)
 
         except torch.cuda.OutOfMemoryError:
             logger.error("GPU out of memory during generation")
