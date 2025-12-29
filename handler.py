@@ -209,10 +209,12 @@ def handler(job):
         logger.info("Generating audio with Chatterbox...")
 
         try:
-            # Generation parameters to reduce repetition
+            # Generation parameters to aggressively reduce repetition
             gen_params = {
-                "repetition_penalty": 1.5,  # Increased from 1.2 default to reduce phrase repetition
-                "temperature": 0.7,         # Reduced from 0.8 default for more consistent output
+                "repetition_penalty": 2.0,  # Maximum value (default 1.2) to prevent phrase repetition
+                "temperature": 0.6,         # Lower than default 0.8 for more consistent output
+                "cfg_weight": 0.7,          # Higher than default 0.5 for better pacing
+                "min_p": 0.1,               # Higher than default 0.05 for tighter sampling
             }
 
             if audio_prompt_path:
