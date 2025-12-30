@@ -13,16 +13,17 @@ RUN apt-get update && apt-get install -y \
 # Copy project files
 COPY . /app
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Install the chatterbox package from the local src directory
-RUN pip install --no-cache-dir -e .
+# Install Python dependencies with aggressive cleanup
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir -e . \
+    && pip cache purge \
+    && rm -rf /tmp/* /var/tmp/* ~/.cache/*
 
 # Pre-download the ChatterboxTurbo model from HuggingFace during build
 # This avoids authentication issues and makes startup instant
 RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='ResembleAI/chatterbox-turbo', token=True, allow_patterns=['*.safetensors', '*.json', '*.txt', '*.pt', '*.model'])" || \
-    python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='ResembleAI/chatterbox-turbo', token=False, allow_patterns=['*.safetensors', '*.json', '*.txt', '*.pt', '*.model'])"
+    python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='ResembleAI/chatterbox-turbo', token=False, allow_patterns=['*.safetensors', '*.json', '*.txt', '*.pt', '*.model'])" \
+    && rm -rf /tmp/* /var/tmp/* ~/.cache/*
 
 # Set Python path
 ENV PYTHONPATH=/app:$PYTHONPATH

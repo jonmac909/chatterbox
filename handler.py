@@ -209,12 +209,12 @@ def handler(job):
         logger.info("Generating audio with Chatterbox...")
 
         try:
-            # Generation parameters - use defaults for best quality
-            # Post-processing handles repetition removal, so no need to reduce temperature
+            # Generation parameters - optimized based on testing
+            # temperature=0.7 is the sweet spot: 0.8 causes too much silence, <0.6 causes stuck generation
             # NOTE: ChatterboxTurboTTS ignores cfg_weight, min_p, and exaggeration (non-Turbo only)
             gen_params = {
                 "repetition_penalty": 1.2,  # Default value (post-processing handles repetition)
-                "temperature": 0.8,         # Default value for natural variation
+                "temperature": 0.7,         # Optimal: 0.8 causes 25% silence, 0.7 causes 5% silence
             }
 
             if audio_prompt_path:
