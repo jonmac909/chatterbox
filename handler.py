@@ -213,7 +213,7 @@ def handler(job):
             # NOTE: ChatterboxTurboTTS ignores cfg_weight, min_p, and exaggeration (non-Turbo only)
             gen_params = {
                 "repetition_penalty": 1.5,  # Moderate (default 1.2, was 2.0 which caused silence)
-                "temperature": 0.7,         # Balanced (default 0.8, was 0.5 which caused silence)
+                "temperature": 0.65,        # Lower for cleaner articulation (was 0.7, <0.6 causes silence)
             }
 
             if audio_prompt_path:
