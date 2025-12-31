@@ -211,9 +211,10 @@ def handler(job):
         try:
             # Generation parameters - optimized based on testing
             # temperature=0.7 is the sweet spot: 0.8 causes too much silence, <0.6 causes stuck generation
+            # repetition_penalty=1.5 prevents phrase repetitions without causing silence (max 2.0)
             # NOTE: ChatterboxTurboTTS ignores cfg_weight, min_p, and exaggeration (non-Turbo only)
             gen_params = {
-                "repetition_penalty": 1.2,  # Default value (post-processing handles repetition)
+                "repetition_penalty": 1.5,  # Higher than default 1.2 to prevent phrase repetition
                 "temperature": 0.7,         # Optimal: 0.8 causes 25% silence, 0.7 causes 5% silence
             }
 
